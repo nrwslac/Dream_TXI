@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="Main" Id="{6f9b8da4-c7ba-4f90-95cf-864eb78a6b2a}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Main
+VAR
+    {attribute 'TcLinkTo' := '.bLimitForwardEnable:=TIIB[M3K2 X]^STM Status^Status^Digital input 1;
+                              .bLimitBackwardEnable:=TIIB[M3K2 X]^STM Status^Status^Digital input 2'}
+    M1 : DUT_MotionStage := (nEnableMode:=ENUM_StageEnableMode.DURING_MOTION, bPowerSelf:=TRUE);
+    fbMotionStageM1 : FB_MotionStage;
+    {attribute 'TcLinkTo' := '.bLimitForwardEnable:=TIIB[M3K2 Y]^STM Status^Status^Digital input 1;
+                              .bLimitBackwardEnable:=TIIB[M3K2 Y]^STM Status^Status^Digital input 2'}
+    M2 : DUT_MotionStage := (nEnableMode:=ENUM_StageEnableMode.DURING_MOTION, bPowerSelf:=TRUE);
+    fbMotionStageM2 : FB_MotionStage;
+    {attribute 'TcLinkTo' := '.bLimitForwardEnable:=TIIB[M3K2 rY]^STM Status^Status^Digital input 1;
+                              .bLimitBackwardEnable:=TIIB[M3K2 rY]^STM Status^Status^Digital input 2'}
+    M3 : DUT_MotionStage := (nEnableMode:=ENUM_StageEnableMode.DURING_MOTION, bPowerSelf:=TRUE);
+    fbMotionStageM3 : FB_MotionStage;
+
+
+    fbStepSizeTest_M3K2X : FB_MicroStepCountTest := (
+        fStepSize := 0.00015625,
+        nSteps := 1000,
+        fMicroStep := 0.00015625,
+        fVelocity := 1,
+        tSettleTime := T#1S);
+
+    fbStepSizeTest_M3K2Y : FB_MicroStepCountTest := (
+        fStepSize := 0.0097656,
+        nSteps := 1000,
+        fMicroStep := 0.0097656,
+        fVelocity := 0.5,
+        tSettleTime := T#1S);
+
+    fbStepSizeTest_M3K2rY : FB_MicroStepCountTest := (
+        fStepSize := 0.0013021,
+        nSteps := 1000,
+        fMicroStep := 0.0013021,
+        fVelocity := 10,
+        tSettleTime := T#1S);
+
+    fbM1Stats : FB_MotionStageStats;
+    fbM2Stats : FB_MotionStageStats;
+    fbM3Stats : FB_MotionStageStats;
+
+    {attribute 'TcLinkTo' := 'TIID^Device 1 (EtherCAT)^Term 1 (EK1100)^STO (EL1004)^Channel 1^Input'}
+    bSTOEnable1 AT %I* : BOOL;
+    {attribute 'TcLinkTo' := 'TIID^Device 1 (EtherCAT)^Term 1 (EK1100)^STO (EL1004)^Channel 2^Input'}
+    bSTOEnable2 AT %I* : BOOL;
+
+    END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[M1.nEnableMode;
+M2.nEnableMode;
+M3.nEnableMode;
+
+//M1.bHardwareEnable := bSTOEnable1 AND bSTOEnable2;
+//M2.bHardwareEnable := bSTOEnable1 AND bSTOEnable2;
+//M3.bHardwareEnable := bSTOEnable1 AND bSTOEnable2;
+
+M1.bHardwareEnable := bSTOEnable1;
+M2.bHardwareEnable := bSTOEnable1;
+M3.bHardwareEnable := bSTOEnable1;
+
+fbMotionStageM1(stMotionStage:=M1);
+fbMotionStageM2(stMotionStage:=M2);
+fbMotionStageM3(stMotionStage:=M3);
+
+fbM1Stats(Axis:=M1);
+fbM2Stats(Axis:=M2);
+fbM3Stats(Axis:=M3);
+
+fbStepSizeTest_M3K2X(Axis:=M1.Axis);
+fbStepSizeTest_M3K2Y(Axis:=M2.Axis);
+fbStepSizeTest_M3K2rY(Axis:=M3.Axis);]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
