@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="Main" Id="{6f9b8da4-c7ba-4f90-95cf-864eb78a6b2a}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Main
 VAR
@@ -15,6 +15,10 @@ VAR
                               .bLimitBackwardEnable:=TIIB[M3K2 rY]^STM Status^Status^Digital input 2'}
     M3 : DUT_MotionStage := (nEnableMode:=ENUM_StageEnableMode.DURING_MOTION, bPowerSelf:=TRUE);
     fbMotionStageM3 : FB_MotionStage;
+    
+    
+    
+    
 
 
     fbStepSizeTest_M3K2X : FB_MicroStepCountTest := (
@@ -53,6 +57,9 @@ VAR
       <ST><![CDATA[M1.nEnableMode;
 M2.nEnableMode;
 M3.nEnableMode;
+M4.nEnableMode;
+
+
 
 //M1.bHardwareEnable := bSTOEnable1 AND bSTOEnable2;
 //M2.bHardwareEnable := bSTOEnable1 AND bSTOEnable2;
